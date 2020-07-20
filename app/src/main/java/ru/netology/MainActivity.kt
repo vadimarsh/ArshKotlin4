@@ -7,7 +7,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
-import ru.netology.dto.PostAbstract
+import ru.netology.dto.Post
 import ru.netology.dto.PostEvent
 import ru.netology.dto.PostVideo
 import ru.netology.util.Location
@@ -35,7 +35,7 @@ class MainActivity : AppCompatActivity() {
         )
 
         initPost(post)
-        refreshPost(post)
+        refreshPostEvent(post)
         val postVideo = PostVideo(
             1,
             "Arshinsky Vadim",
@@ -97,12 +97,13 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    private fun initPost(post: PostAbstract) {
+    private fun initPost(post: Post) {
         if (post is PostEvent) {
             val location = "geo:" + post.coord.lat + ", " + post.coord.lon
             val uri: Uri = Uri.parse(location)
             geoTag.setOnClickListener {
-                val intent = Intent(Intent.ACTION_VIEW, uri)
+                val intent = Intent(Intent.ACTION_VIEW)
+                intent.apply { this.data = uri }
                 startActivity(intent)
             }
             likeButton.setOnClickListener {
@@ -113,7 +114,7 @@ class MainActivity : AppCompatActivity() {
                     post.likes++
                     post.likedByMe = true
                 }
-                refreshPost(post)
+                refreshPostEvent(post)
             }
             commentButton.setOnClickListener {
                 if (post.commentedByMe) {
@@ -123,7 +124,7 @@ class MainActivity : AppCompatActivity() {
                     post.comments++
                     post.commentedByMe = true
                 }
-                refreshPost(post)
+                refreshPostEvent(post)
             }
             shareButton.setOnClickListener {
                 if (post.sharedByMe) {
@@ -133,7 +134,7 @@ class MainActivity : AppCompatActivity() {
                     post.shares++
                     post.sharedByMe = true
                 }
-                refreshPost(post)
+                refreshPostEvent(post)
 
             }
         }
@@ -179,7 +180,7 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    fun refreshPost(post: PostAbstract) {
+    fun refreshPostEvent(post: PostEvent) {
         val curentDate = Date(System.currentTimeMillis())
         val elapsed = (curentDate.time - post.created.time) / 1_000
         createdTv.text = verboseTime(elapsed)

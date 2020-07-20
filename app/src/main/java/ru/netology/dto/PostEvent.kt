@@ -16,15 +16,4 @@ data class PostEvent(
     override var likedByMe: Boolean = false,
     override var commentedByMe: Boolean = false,
     override var sharedByMe: Boolean = false
-) : PostAbstract(
-    id,
-    author,
-    content,
-    created,
-    likes,
-    comments,
-    shares,
-    likedByMe,
-    commentedByMe,
-    sharedByMe
-)
+) : Post
